@@ -3,7 +3,7 @@
 # converging time < 1000
 # Three valued Martix = np.array([[0, 0, 0.5], [0, 0.5, 1], [0.5, 1, 1]])
 # agent number = 100
-# Probability of connection = 0.4
+# Probability of connection = 0.5
 # Evidence rate start from 0.01~1 each round e increase 0.01
 # Error rate = 0.2
 import networkx as ne
@@ -53,11 +53,11 @@ def count(Belief_Array):
 
 while e <= 1.01:
     u = []                                  # number convering time of experiments
-    for t in range(1,101):                    # number of experiments is 10
+    for t in range(1,101):                    # number of experiments is 100
        
         print ("No.", t,"experiment:")
         x = 100       # number of agents is 3~9
-        y = 0.4      # line possibility to connect other agents is 0.5~0.7
+        y = 0.5      # line possibility to connect other agents is 0.5
 
         print ('number of agents:', x)
         print ('line possibility to connect other agents:', y)
