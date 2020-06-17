@@ -1,0 +1,182 @@
+# Random Network graph by Harrysu
+# experiments time = 4
+# converging time < 1000
+# Three valued Martix = np.array([[0, 0, 0.5], [0, 0.5, 1], [0.5, 1, 1]])
+# agent number starts from 100,200,400,800
+# Probability of connection =0.5
+# Evidence rate = 0.6
+# Error rate = 0.15
+
+import networkx as ne
+import matplotlib.pyplot as mp
+import random
+from random import choice
+import numpy as np
+import pandas as pd
+#erdos renyi graphy
+
+e = 100
+L = []
+Q = []
+def result(i,Belief_Array):
+    #print ("Update",i,"times:", Belief_Array)
+    ans=count(Belief_Array)
+    converge=0
+    belief_0.append(ans[0])
+    belief_neutral.append(ans[1])
+    belief_1.append(ans[2])
+    #print("Result:",belief_0,belief_neutral,belief_1)
+    if ans[0] == 0.9*x:
+        converge=1
+        print ("Update",i,"times:")
+        u.append(i)
+    elif ans[2] == 0.9*x:
+        converge=2
+        print ("Update",i,"times:")
+        u.append(i)
+        #print ("Totally Update",i,"times:")
+        #print("Average Update",i/10,"times:")
+    else:
+        converge=0
+    return converge
+def count(Belief_Array):
+    count1=0
+    count2=0
+    count3=0
+    for i in range(0,len(Belief_Array)):
+        if Belief_Array[i] == 0:
+            count1+=1
+        if Belief_Array[i] == 0.5:
+            count2+=1
+        if Belief_Array[i] == 1:
+            count3+=1
+    return count1,count2,count3
+
+while e <= 800:
+    u = []                                  # number convering time of experiments
+    for t in range(1,11):                    # number of experiments is 10
+       
+        print ("No.", t,"experiment:")
+        x = e       # number of agents is 3~9
+        y = 0.5      # line possibility to connect other agents is 0.5~0.7
+
+        print ('number of agents:', x)
+        print ('line possibility to connect other agents:', y)
+        rg = ne.erdos_renyi_graph(x,y)      # use possibility to random connect
+        ps = ne.shell_layout(rg)
+        #ne.draw(rg,ps,with_labels=False,node_size=100)
+        #mp.show()
+        p = []
+        temp = 0
+        Belief_Array = []
+        Belief_Original_Array = []
+        Belief_Evidence_Array = []
+        Error_Array = []
+        check = 0                           # make sure all the nodes have edge
+        belief_0 = []
+        belief_neutral = []
+        belief_1 = []
+        Error_Array = []
+        Belief_Evidence_Array = []
+        work_evidence = []
+        evidence_possible = 0.6
+        error_possible = 0.15
+        for i in range(0,x):
+            if rg.degree(i) == 0:
+                #print ('degree of node', i,'is 0')
+                adjacent = []
+                #print ('adjacent nodes of node', i,'is', adjacent)
+                p.append(adjacent)
+                Belief_Array.append((random.randrange(0,3,1)) / 2)
+                check = 1                   # invalid network
+            else:
+                #print ('degree of node', i,'is', rg.degree(i))
+                adjacent = []
+                for j in rg.neighbors(i):
+                    adjacent.append(j)
+                #print ('adjacent nodes of node', i,'is', adjacent)
+                p.append(adjacent)
+                temp += rg.degree(i)
+                Belief_Array.append((random.randrange(0,3,1)) / 2)
+                
+        edge = int(temp/2)
+        print ('\nnumber of edges:', edge, '\n')
+        Belief_Original_Array = Belief_Array
+        Martix = np.array([[0, 0, 0.5], [0, 0.5, 1], [0.5, 1, 1]])
+        for work_evidence in range(0,x):
+            Belief_Evidence_Array.append((random.randrange(0,1000,1)/1000))
+        for error_evidence in range(0,x):
+            Error_Array.append((random.randrange(0,1001,1)/1000))
+        if check == 1:
+            for r in range(1,1001):
+                for k in range(0,x):
+                    if Belief_Array[k] == 0.5 and Belief_Evidence_Array[k] <= evidence_possible and Error_Array[k] > error_possible:
+                        Belief_Array[k] = 1
+                    elif Belief_Array[k] == 0.5 and Belief_Evidence_Array[k] <= evidence_possible and Error_Array[k] <= error_possible:
+                        Belief_Array[k] = 0
+                    elif Belief_Array[k] == 0.5 and Belief_Evidence_Array[k] > evidence_possible:
+                        Belief_Array[k] = 0.5
+        elif check == 0:
+            for r in range(1,1001):
+                for k in range(0,x):
+                    if Belief_Array[k] == 0.5 and Belief_Evidence_Array[k] <= evidence_possible and Error_Array[k] > error_possible:
+                        Belief_Array[k] = 1
+                    elif Belief_Array[k] == 0.5 and Belief_Evidence_Array[k] <= evidence_possible and Error_Array[k] <= error_possible:
+                        Belief_Array[k] = 0
+                    elif Belief_Array[k] == 0.5 and Belief_Evidence_Array[k] > evidence_possible:
+                        Belief_Array[k] = 0.5
+                #print("Belief_Array:",Belief_Array)
+                #print("Belief_Evidence_Array:",Belief_Evidence_Array)
+                #print("All the nodes:",p)
+                A = random.randrange(0,len(p),1)
+                B = random.choice(p[A])
+                #print("A:",A)
+                #print("B:",B)
+                a = Martix[int(2*Belief_Array[A]),int(2*Belief_Array[B])]
+                Belief_Array[A]=a
+                Belief_Array[B]=a
+                converge=result(r,Belief_Array)
+                if converge == 1:
+                    print("Converge at 0\n")
+                    break
+                elif converge == 2:
+                    print("Converge at 1\n")
+                    break
+                else:
+                    pass
+        else:
+            print ('invalid network\n')
+        
+        
+        #x1=range(0,r)
+        #mp.plot(x1,belief_0,label='Belief=0',color='b')
+        #mp.plot(x1,belief_neutral,label='Belief=0.5',color='g')
+        #mp.plot(x1,belief_1,label='Belief=1',color='#000000')
+        #mp.xlabel('iteration times')
+        #mp.ylabel('Beliefs distribution')
+        #mp.title('Belief states \n After iterations')
+        #mp.savefig(r'D:\Network\88.jpg')
+        #mp.legend()
+        #mp.show()
+    G =count(Belief_Array)         #All number of each three belief 
+    O =list(G)                   #All number of each three belief
+    g =O[2]
+    Q.append(100*(g/x))
+    e = e *2
+    
+    print("Line possibility:",y)
+    '''
+    Z = np.sum(u)
+    print("Average of Converging Time :",Z/len(u))
+    L.append(Z/len(u))
+    '''
+
+print(Q)
+e1=np.arange(100,800,100)
+mp.plot(e1,Q,color='b')
+mp.xlabel('Line possibility')
+mp.ylabel('Belief 1 by %')
+mp.title('Belief 1 by % \n Line possibility')
+mp.savefig(r'D:\Network\914.jpg')
+mp.legend()
+mp.show()
