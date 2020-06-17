@@ -1,4 +1,4 @@
-# Random Network grap by Harrysu
+# Random Network graph by Harrysu
 # experiments time = 10
 # converging time < 1000
 # Three valued Martix = np.array([[0, 0, 0.5], [0, 0.5, 1], [0.5, 1, 1]])
