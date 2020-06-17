@@ -2,6 +2,8 @@
 # experiments time = 10
 # converging time < 1000
 # Three valued Martix = np.array([[0, 0, 0.5], [0, 0.5, 1], [0.5, 1, 1]])
+# Probability of connection is 0.1~1 each round e plus 0.1
+# agent munber is 200
 import networkx as ne
 import matplotlib.pyplot as mp
 import random
@@ -9,7 +11,7 @@ from random import choice
 import numpy as np
 import pandas as pd
 #erdos renyi graphy
-e = 0.1                                        #To control Evidence possible
+e = 0.1                                        #Probability of connection to control Evidence possible
 L = []
 u = []                                  # number convering time of experiments
 Q = []
@@ -54,7 +56,7 @@ while e <= 1:
 
         print ("No.", t,"experiment:")
         x = 200       # number of agents is 3~9
-        y = e      # line possibility to connect other agents is 0.5~0.7
+        y = e      # Probability of connection (line possibility to connect other agents) is 0.1~1
         rg = ne.erdos_renyi_graph(x,y)      # use possibility to random connect
         ps = ne.shell_layout(rg)
         #ne.draw(rg,ps,with_labels=False,node_size=100)
